@@ -1,19 +1,32 @@
 package testes;
 
+import java.util.Scanner;
+
+import servidor.ControladorTabuleiro;
 import servidor.CoordenadaTabuleiro;
-import servidor.ICoordenada;
-import servidor.Tabuleiro;
 
 public abstract class Testes {
+	
+	public void teste1 () {
+		ControladorTabuleiro controladorTabuleiro = new ControladorTabuleiro(); 
+		Scanner ler = new Scanner(System.in);
+		
+		while(!controladorTabuleiro.verificarGanhador()) {
+			System.out.println(controladorTabuleiro.jogar(ler.nextInt(), controladorTabuleiro.getVez()));
+			controladorTabuleiro.getTabuleiro().printTabuleiro();
+		}
+		
+		ler.close();
+	}
 
 	public static void main(String[] args) {
-		Tabuleiro t = new Tabuleiro();
-		t.printTabuleiro();
-		t.restart();
-		t.printTabuleiro();
-		System.out.println(t.getPosicao(new CoordenadaTabuleiro(5, 0)));
-		t.setJogada(new CoordenadaTabuleiro(5, 0), t.PLAYER1);
-		t.printTabuleiro();
+		
+		String a = "Mensagem: terra";
+		
+		if(a.contains("Mensagem:")) {
+			System.out.println("tem");
+		}else {
+			System.out.println("n tem");
+		}
 	}
-	
 }

@@ -1,63 +1,71 @@
 package servidor;
 
-import servidor.ICoordenada;
+import servidor.CoordenadaTabuleiro;
 
 public class Tabuleiro {
 	
+	public static final int limiteVertical = 6;
+	public static final int limiteHorizontal = 7;
+	
+	public static final int INVALIDO = -1;
+	public static final int INDISPONIVEL = 0;
+	public static final int PLAYER1 = 1;
+	public static final int PLAYER2 = 2;
+	public static final int DISPONIVEL = 3;
+	
 	private int tabuleiro[][];
 	
-	private final int LINHAS = 6;
-	private final int COLUNAS= 7;
-	
-	public final int PLAYER1 = 1;
-	public final int PLAYER2 = 2;
-	public final int DISPONIVEL = 3;
-	public final int INDISPONIVEL = 0;
-	public final int INVALIDO = -1;
-	
 	public Tabuleiro() {
-		tabuleiro = new int[LINHAS][COLUNAS];
+		tabuleiro = new int[limiteVertical][limiteHorizontal];
 		this.initTabuleiro();
 	}
 	
 	private void initTabuleiro() {
-		for (int i = 0; i < COLUNAS; i++) {
+		for (int i = 0; i < limiteHorizontal ; i++) {
 			tabuleiro[5][i] = DISPONIVEL;
 		}
 	}
 	
 	public void restart() {
-		for(int i = 0; i < LINHAS; i++) {
-			for(int j = 0; j < COLUNAS; j++) {
+		for(int i = 0; i < limiteVertical ; i++) {
+			for(int j = 0; j < limiteHorizontal ; j++) {
 				tabuleiro[i][j] = INDISPONIVEL;
 			}
 		}
 		this.initTabuleiro();
 	}
 	
-	public void setJogada(ICoordenada coordenada, final int player) throws IndexOutOfBoundsException{
+	public void setJogada(CoordenadaTabuleiro coordenada, final int player) throws IndexOutOfBoundsException{
 		tabuleiro[coordenada.getLinha()][coordenada.getColuna()] = player;
-		coordenada.setLinha(coordenada.getLinha()-1);
-		atualizarDisponivel(coordenada);
+		CoordenadaTabuleiro aux = new CoordenadaTabuleiro(coordenada.getLinha() - 1, coordenada.getColuna());
+		atualizarDisponivel(aux);
 	}
 	
-	private void atualizarDisponivel(ICoordenada coordenada) {
-		if(coordenada.coordenadaIsValida()) {
+	private void atualizarDisponivel(CoordenadaTabuleiro coordenada) {
+		if(coordenada.isValida()) {
 			tabuleiro[coordenada.getLinha()][coordenada.getColuna()] = DISPONIVEL;
 		}
 	}
 	
-	public final int getPosicao(ICoordenada coordenada) {
-		if(coordenada.coordenadaIsValida()) {
+	public int getPosicao(CoordenadaTabuleiro coordenada) {
+		if(coordenada.isValida()) {
 			return tabuleiro[coordenada.getLinha()][coordenada.getColuna()];
 		}
-		
+		return INVALIDO;
+	}
+	
+	public int getLinhaDisponivel(int coluna) throws IndexOutOfBoundsException{
+		for(int linha = limiteVertical - 1; linha >= 0 ; linha--) {
+			if(tabuleiro[linha][coluna] == DISPONIVEL) {
+				return linha;
+			}
+		}
 		return INVALIDO;
 	}
 	
 	public void printTabuleiro() {
-		for (int i = 0; i < 6; i++) {
-			for (int j = 0; j < 7; j++) {
+		for (int i = 0; i < 6 ; i++) {
+			for (int j = 0; j < 7 ; j++) {
 				System.out.print(tabuleiro[i][j] + " ");
 			}
 			System.out.println();
