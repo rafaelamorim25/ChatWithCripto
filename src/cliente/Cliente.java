@@ -36,6 +36,10 @@ import javax.swing.BoxLayout;
 
 public class Cliente extends JFrame implements ActionListener, KeyListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JTextField textField;
 	private Socket socket;
 	private OutputStream ou;
@@ -48,7 +52,6 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 	private JButton btnSend;
 	private JButton btnSair;
 	private JLabel lblHistorico;
-	private JLabel lblMsg;
 	private JPanel painelDireito;
 	private JTextField txtIP;
 	private JTextField txtPorta;
@@ -128,7 +131,7 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 		lblHistorico = new JLabel("Histórico");
 		painelC.add(lblHistorico);
 		texto = new JTextArea(10, 20);
-		texto.setEditable(true);
+		texto.setEditable(false);
 		texto.setBackground(new Color(240, 240, 240));
 		JScrollPane scroll = new JScrollPane(texto);
 		painelC.add(scroll);
@@ -142,12 +145,10 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 		
 		painelSulN = new JPanel();
 		painelS.add(painelSulN);
-		lblMsg = new JLabel("Mensagem");
 		txtMsg = new JTextField(20);
 		txtMsg.addKeyListener(this);
 		txtMsg.setBorder(BorderFactory.createEtchedBorder(Color.BLUE, Color.BLUE));
-		painelSulN.setLayout(new BoxLayout(painelSulN, BoxLayout.X_AXIS));
-		painelSulN.add(lblMsg);
+		painelSulN.setLayout(new FlowLayout());
 		painelSulN.add(txtMsg);
 		
 		painelSulS = new JPanel();
@@ -179,10 +180,28 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 			bfw.write("Desconectado \r\n");
 		} else {
 			System.out.println("enviou: "+ msg);
-			bfw.write(msg + "\r\n");
+			bfw.write(msg + " \r\n");
 		}
 		bfw.flush();
 		textField.setText("");
+	}
+	
+	public void enviarMensagem() throws IOException{
+		texto.append("\nMinha mensagem: " + txtMsg.getText());
+		bfw.write("Mensagem: "+ txtMsg.getText() + " \r\n");
+		bfw.flush();
+		txtMsg.setText("");
+	}
+	
+	public void enviar(String msg) {
+		try {
+			bfw.write(msg + "\r\n");
+			bfw.flush();
+		} catch (IOException e) {
+			System.out.println("naoEnviou");
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public void escutar() throws IOException {
@@ -207,7 +226,9 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 		
 		if(msg.contains("Pinte: ")) {
 			realizarJogada(msg);
-		}else {
+		} else if(msg.contains("Mensagem: ")) {
+			mostrarMensagem(msg);
+		} else {
 			JOptionPane.showMessageDialog(null, msg);
 		}
 	}
@@ -224,6 +245,10 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 		
 		botoes[Integer.parseInt(jogada[1])][Integer.parseInt(jogada[2])].setBackground(c);
 	}
+	
+	public void mostrarMensagem(String msg) {
+		texto.append("\n" + msg);
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -231,6 +256,8 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 		try {
 			if (e.getActionCommand().equals(btnJogar.getActionCommand()))
 				this.enviarJogada("Jogada: " + textField.getText());
+			else if(e.getActionCommand().equals(btnSend.getActionCommand()))
+				this.enviarMensagem();
 			
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block

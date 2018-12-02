@@ -38,12 +38,11 @@ public class ControladorTabuleiro {
 	
 	public boolean verificarGanhador() {
 		if(quantidadeJogadas < 7 && !ultimaJogada.isValida()) {
+			System.out.println("Sem ganhadores por causa de jogadas");
 			return false;
 		}
-		return (verificarLinha() || 
-				verificarColuna() || 
-				verificarDiagonalDireita() || 
-				verificarDiagonalEsquerda())?true:false;
+		
+		return (verificarLinha() || verificarColuna() || verificarDiagonalDireita() || verificarDiagonalEsquerda()) ? true : false;
 	}
 	
 	public boolean verificarLinha () {
@@ -95,6 +94,7 @@ public class ControladorTabuleiro {
 		linha = (linha + 3 > 5) ? 5 : linha + 3;
 		
 		for (;coluna >= 0 && linha >= 0; coluna--, linha--) {
+			aux.setLinha(linha); aux.setColuna(coluna);
 			
 			count = (tabuleiro.getPosicao(aux) == 
 					((vez == Tabuleiro.PLAYER1) ? 
@@ -121,6 +121,7 @@ public class ControladorTabuleiro {
 		linha = (linha + 3 > 5) ? 5 : linha + 3;
 	
 		for (;coluna <= 6 && linha >= 0; coluna++, linha--) {
+			aux.setLinha(linha); aux.setColuna(coluna);
 			
 			count = (tabuleiro.getPosicao(aux) == 
 					((vez == Tabuleiro.PLAYER1) ? 

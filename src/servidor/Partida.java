@@ -1,9 +1,5 @@
 package servidor;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-
 public class Partida implements IComunicacao {
 	
 	private ControladorTabuleiro tabuleiro;
@@ -35,7 +31,6 @@ public class Partida implements IComunicacao {
 			System.out.println("Entrou na msg");
 		}else if(msg.contains("Jogada: ")) {
 			this.tratarJogada(msg, jogador);
-			System.out.println("Entrou na jogada");
 		}else {
 			jogador.sendToJogador("error");
 			System.out.println("Mensagem enviada por aliens não pode ser decodificada");
@@ -44,9 +39,13 @@ public class Partida implements IComunicacao {
 	
 	public void enviarMensagem(String msg, Jogador jogador) {
 		
+		System.out.println(msg+"cabou");
+		
 		if (jogador.equals(player1)) {
+			System.out.println("Enviada ao player 1");
 			player2.sendToJogador(msg); 
 		}else {
+			System.out.println("Enviada ao player 2");
 			player1.sendToJogador(msg);
 		}
 	}
@@ -68,11 +67,17 @@ public class Partida implements IComunicacao {
 				trave2 = 1;
 			}
 			tabuleiro.getTabuleiro().printTabuleiro();
-			player1.sendToJogador("Pinte: " + tabuleiro.getJogada().toString() + " " + color + " " + trave1 + "\r\n");
-			player2.sendToJogador("Pinte: " + tabuleiro.getJogada().toString() + " " + color + " " + trave2 + "\r\n");
+			player1.sendToJogador("Pinte: " + tabuleiro.getJogada().toString() + " " + color + " " + trave1);
+			player2.sendToJogador("Pinte: " + tabuleiro.getJogada().toString() + " " + color + " " + trave2);
 		}else {
-			jogador.sendToJogador("Jogue novamente\r\n");
+			jogador.sendToJogador("Jogue novamente");
 		}
+		
+		if(tabuleiro.verificarGanhador()) {
+			jogador.sendToJogador("Alguém ganhou");
+		}
+		
+		System.out.println(tabuleiro.verificarGanhador());
 	}
 	
 	public String[] separarMensagem(String msg) {

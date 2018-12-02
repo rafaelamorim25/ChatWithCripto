@@ -1,6 +1,5 @@
 package servidor;
 
-import java.io.BufferedWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 

@@ -8,13 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 public class Jogador extends Thread {
 	
@@ -65,7 +59,7 @@ public class Jogador extends Thread {
 	public void sendToJogador(String msg) {
 		try{
 			System.out.println("Mensagem que vai ser enviada ao cliente: "+msg+"\r\n");
-			bfw.write(msg);
+			bfw.write(msg + "\r\n");
 			bfw.flush();
 		}catch(Exception e){
 			System.out.println("Deu ruim ao mandar pro jogador");
