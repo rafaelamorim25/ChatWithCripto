@@ -19,7 +19,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.KeyListener;import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -30,6 +31,8 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.Socket;
 import java.awt.FlowLayout;
+import java.awt.Font;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.BoxLayout;
@@ -46,6 +49,7 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 	private Writer ouw;
 	private BufferedWriter bfw;
 	private JButton[][] botoes;
+	private JButton[] colunas;
 	private JButton btnJogar;
 	private JTextArea texto;
 	private JTextField txtMsg;
@@ -102,7 +106,17 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 		
 		JPanel painelCentral = new JPanel();
 		painelEsquerdo.add(painelCentral, BorderLayout.CENTER);
-		painelCentral.setLayout(new GridLayout(6, 7, 0, 0));
+		painelCentral.setLayout(new GridLayout(7, 7, 0, 0));
+		
+		this.colunas = new JButton[7];
+		
+		for(int i = 0; i < 7; i++) {
+			colunas[i] = new JButton("V");
+			colunas[i].setFont(new Font(null, Font.PLAIN, 8));
+			colunas[i].addActionListener(new ActionPlay(i));
+			painelCentral.add(colunas[i]);
+		}
+		
 		
 		botoes = new JButton[6][7];
 		
@@ -151,12 +165,40 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 		painelSulN.setLayout(new FlowLayout());
 		painelSulN.add(txtMsg);
 		
+		
 		painelSulS = new JPanel();
 		painelS.add(painelSulS);
 		btnSair = new JButton("Sair");
 		painelSulS.add(btnSair);
 		btnSair.setToolTipText("Sair do Chat");
 		btnSend = new JButton("Enviar");
+		txtMsg.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					try {
+						enviarMensagem();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				
+			}
+		});
 		painelSulS.add(btnSend);
 		btnSend.setToolTipText("Enviar Mensagem");
 		btnSend.addActionListener(this);
@@ -192,6 +234,8 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 		bfw.flush();
 		txtMsg.setText("");
 	}
+	
+	
 	
 	public void enviar(String msg) {
 		try {
@@ -242,8 +286,14 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 		Boolean travei = (Integer.parseInt(jogada[4])==1) ? false : true;
 		
 		btnJogar.setEnabled(travei);
-		
+		travar(travei);
 		botoes[Integer.parseInt(jogada[1])][Integer.parseInt(jogada[2])].setBackground(c);
+	}
+	
+	public void travar(boolean status) {
+		for(int i = 0;i < 7;i++) {
+			colunas[i].setEnabled(status);
+		}
 	}
 	
 	public void mostrarMensagem(String msg) {
@@ -291,6 +341,13 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 		public void keyPressed(KeyEvent evento) {
 			if (evento.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 				backspace = true;
+			} if (evento.getKeyCode() == KeyEvent.VK_ENTER) {
+				try {
+					enviarMensagem();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}
 		@Override
@@ -315,6 +372,26 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	private class ActionPlay implements ActionListener{
+
+		int coluna;
+		
+		public ActionPlay(int coluna) {
+			this.coluna = coluna+1;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				enviarJogada("Jogada: " + coluna);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 	}
 }
