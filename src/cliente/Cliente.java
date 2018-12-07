@@ -19,8 +19,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.KeyListener;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -33,28 +33,21 @@ import java.net.Socket;
 import java.awt.FlowLayout;
 import java.awt.Font;
 
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.BoxLayout;
-
 public class Cliente extends JFrame implements ActionListener, KeyListener {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTextField textField;
 	private Socket socket;
 	private OutputStream ou;
 	private Writer ouw;
 	private BufferedWriter bfw;
 	private JButton[][] botoes;
 	private JButton[] colunas;
-	private JButton btnJogar;
 	private JTextArea texto;
 	private JTextField txtMsg;
 	private JButton btnSend;
-	private JButton btnSair;
 	private JLabel lblHistorico;
 	private JPanel painelDireito;
 	private JTextField txtIP;
@@ -88,21 +81,6 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 		JPanel painelNorte = new JPanel();
 		painelEsquerdo.add(painelNorte, BorderLayout.NORTH);
 		painelNorte.setBorder(new TitledBorder(null, "LIGA 4", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		
-		JPanel painelSul = new JPanel();
-		painelEsquerdo.add(painelSul, BorderLayout.SOUTH);
-		
-		JLabel lbl = new JLabel("Coluna:");
-		painelSul.add(lbl);
-		
-		textField = new JTextField();
-		textField.addKeyListener(new VerificarDigito());
-		painelSul.add(textField);
-		textField.setColumns(10);
-		
-		btnJogar = new JButton("Jogar");
-		btnJogar.addActionListener(this);
-		painelSul.add(btnJogar);
 		
 		JPanel painelCentral = new JPanel();
 		painelEsquerdo.add(painelCentral, BorderLayout.CENTER);
@@ -168,9 +146,6 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 		
 		painelSulS = new JPanel();
 		painelS.add(painelSulS);
-		btnSair = new JButton("Sair");
-		painelSulS.add(btnSair);
-		btnSair.setToolTipText("Sair do Chat");
 		btnSend = new JButton("Enviar");
 		txtMsg.addKeyListener(new KeyListener() {
 			
@@ -203,8 +178,7 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 		btnSend.setToolTipText("Enviar Mensagem");
 		btnSend.addActionListener(this);
 		btnSend.addKeyListener(this);
-		btnSair.addActionListener(this);
-		
+	
 		this.setVisible(true);
 	}
 	
@@ -225,7 +199,6 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 			bfw.write(msg + " \r\n");
 		}
 		bfw.flush();
-		textField.setText("");
 	}
 	
 	public void enviarMensagem() throws IOException{
@@ -284,8 +257,6 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 		c = (Integer.parseInt(jogada[3])==0) ? Color.blue : Color.red;
 		
 		Boolean travei = (Integer.parseInt(jogada[4])==1) ? false : true;
-		
-		btnJogar.setEnabled(travei);
 		travar(travei);
 		botoes[Integer.parseInt(jogada[1])][Integer.parseInt(jogada[2])].setBackground(c);
 	}
@@ -304,9 +275,7 @@ public class Cliente extends JFrame implements ActionListener, KeyListener {
 	public void actionPerformed(ActionEvent e) {
 		
 		try {
-			if (e.getActionCommand().equals(btnJogar.getActionCommand()))
-				this.enviarJogada("Jogada: " + textField.getText());
-			else if(e.getActionCommand().equals(btnSend.getActionCommand()))
+			if(e.getActionCommand().equals(btnSend.getActionCommand()))
 				this.enviarMensagem();
 			
 		} catch (IOException e1) {
