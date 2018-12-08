@@ -47,8 +47,12 @@ public class Jogador extends Thread {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
-
+			System.out.println("Alguém desconectou, encerrar partida");
+			try {
+				con.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}	
 	}
 	

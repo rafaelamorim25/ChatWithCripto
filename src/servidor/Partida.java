@@ -1,5 +1,7 @@
 package servidor;
 
+import java.io.IOException;
+
 public class Partida implements IComunicacao {
 	
 	private static final int PARTIDANAOINICIADA = -1;
@@ -19,7 +21,6 @@ public class Partida implements IComunicacao {
 	public void addPlayer1(Jogador bfw) {
 		player1 = bfw;
 		player1.setComunicador(this);
-		player1.sendToJogador("Partida ainda não começou, espere");
 	}
 	
 	public void addPlayer2(Jogador bfw) {
@@ -99,5 +100,11 @@ public class Partida implements IComunicacao {
 		String[] mensagem;
 		mensagem = msg.split(" ");
 		return mensagem;
+	}
+
+	@Override
+	public void comunicar(String msg) throws IOException {
+		// TODO Auto-generated method stub
+		
 	}
 }
