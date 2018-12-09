@@ -10,8 +10,6 @@ import java.io.IOException;
 public class Cliente extends JFrame implements IComunicacao {
 
 	private static final long serialVersionUID = 1L;
-	private PainelTabuleiro tab;
-	private PainelChat chat;
 	private Conexao conexao;
 	private JanelaMultiPlayerOnline janela;
 
@@ -21,6 +19,8 @@ public class Cliente extends JFrame implements IComunicacao {
 
 	public Cliente() throws IOException {
 		conexao = new Conexao(this);
+		Thread t = new Thread(conexao);
+		t.start();
 		janela = new JanelaMultiPlayerOnline(this);
 	}
 
@@ -29,7 +29,7 @@ public class Cliente extends JFrame implements IComunicacao {
 	}
 	
 	public void enviarMensagem(String str) {
-		chat.mostrarMensagem(conexao.getNome() + " -> " + str);
+		janela.getPainelChat().mostrarMensagem(conexao.getNome() + " -> " + str);
 		conexao.enviar("Mensagem: " + conexao.getNome() + " -> " + str);
 	}
 	
@@ -45,7 +45,7 @@ public class Cliente extends JFrame implements IComunicacao {
 			for(int i = 1; i < mensagem.length; i++) {
 				str.append(mensagem[i]);
 			}
-			chat.mostrarMensagem(str.toString());
+			janela.getPainelChat().mostrarMensagem(str.toString());
 		} else {
 			JOptionPane.showMessageDialog(null, msg);
 		}
@@ -58,8 +58,8 @@ public class Cliente extends JFrame implements IComunicacao {
 		c = (Integer.parseInt(jogada[3])==0) ? Color.blue : Color.red;
 		
 		Boolean travei = (Integer.parseInt(jogada[4])==1) ? false : true;
-		tab.travar(travei);
-		tab.pintar(Integer.parseInt(jogada[1]), Integer.parseInt(jogada[2]), c);
+		janela.getPainelTabuleiro().travar(travei);
+		janela.getPainelTabuleiro().pintar(Integer.parseInt(jogada[1]), Integer.parseInt(jogada[2]), c);
 	}
 		
 	@Override

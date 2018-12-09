@@ -11,11 +11,14 @@ public class JanelaMultiPlayerOnline extends MinhaJanela {
 
 	private static final long serialVersionUID = 1L;
 	Cliente cliente;
+	
+	private PainelTabuleiro tab;
+	private PainelChat chat;
 
 	public JanelaMultiPlayerOnline(Cliente cliente) {
 		super();
-		init();
 		this.cliente = cliente;
+		init();
 	}
 	
 	private void init() {
@@ -31,13 +34,20 @@ public class JanelaMultiPlayerOnline extends MinhaJanela {
 		painelEsquerdo.add(painelNorte, BorderLayout.NORTH);
 		painelNorte.setBorder(new TitledBorder(null, "LIGA 4", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		
-		PainelTabuleiro tab = new PainelTabuleiro(cliente);
+		tab = new PainelTabuleiro(cliente);
 		painelEsquerdo.add(tab, BorderLayout.CENTER);
 		
-		PainelChat chat = new PainelChat(cliente);
+		chat = new PainelChat(cliente);
 		getContentPane().add(chat);
 	
 		this.setVisible(true);
 	}
-
+	
+	public PainelTabuleiro getPainelTabuleiro() {
+		return this.tab;
+	}
+	
+	public PainelChat getPainelChat() {
+		return this.chat;
+	}
 }

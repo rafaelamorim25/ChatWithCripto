@@ -32,7 +32,18 @@ public class Conexao  implements Runnable {
 	
 	public Conexao(IComunicacao iComunicador) throws IOException {
 		comunicador = iComunicador;
-		Thread t
+		
+		boolean naoConectou = true;
+		
+		while(naoConectou) {
+			try {
+				this.initialize();
+				this.conectar();
+				naoConectou = false;
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(null, "Impossível conectar nesse endereço ou porta, tente novamente");
+			}	
+		}
 	}
 	
 	private void initialize() {
@@ -114,17 +125,6 @@ public class Conexao  implements Runnable {
 
 	@Override
 	public void run() {
-		boolean naoConectou = true;
-		
-		while(naoConectou) {
-			try {
-				this.initialize();
-				this.conectar();
-				naoConectou = false;
-			} catch (IOException e) {
-				JOptionPane.showMessageDialog(null, "Impossível conectar nesse endereço ou porta, tente novamente");
-			}	
-		}
 		
 		try {
 			this.escutar();
