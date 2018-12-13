@@ -7,9 +7,11 @@ public class ControladorTabuleiro {
 	private int quantidadeJogadas;
 	private CoordenadaTabuleiro ultimaJogada;
 	private CoordenadaTabuleiro aux;
+	private int comecou;
 	
 	public ControladorTabuleiro() {
 		tabuleiro = new Tabuleiro();
+		comecou = Tabuleiro.PLAYER1;
 		vez = Tabuleiro.PLAYER1;
 		ultimaJogada = new CoordenadaTabuleiro();
 		aux = new CoordenadaTabuleiro();
@@ -40,6 +42,10 @@ public class ControladorTabuleiro {
 		if(quantidadeJogadas < 7 && !ultimaJogada.isValida()) {
 			System.out.println("Sem ganhadores por causa de jogadas");
 			return false;
+		}
+		
+		if(quantidadeJogadas==42) {
+			return true;
 		}
 		
 		return (verificarLinha() || verificarColuna() || verificarDiagonalDireita() || verificarDiagonalEsquerda()) ? true : false;
@@ -137,8 +143,11 @@ public class ControladorTabuleiro {
 		return false;
 	}
 	
-	public Tabuleiro getTabuleiro() {
-		return this.tabuleiro;
+	public void recomecar() {
+		tabuleiro.restart();
+		this.quantidadeJogadas = 0;
+		comecou = (comecou==Tabuleiro.PLAYER1) ? Tabuleiro.PLAYER2 : Tabuleiro.PLAYER1;
+		this.vez = comecou;
 	}
 	
 	public CoordenadaTabuleiro getJogada() {

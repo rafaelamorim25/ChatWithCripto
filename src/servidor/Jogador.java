@@ -26,6 +26,9 @@ public class Jogador extends Thread {
 			in = con.getInputStream();
 			inr = new InputStreamReader(in);
 			bfr = new BufferedReader(inr);
+			OutputStream ou = this.con.getOutputStream();
+			Writer ouw = new OutputStreamWriter(ou);
+			bfw = new BufferedWriter(ouw);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -36,10 +39,6 @@ public class Jogador extends Thread {
 
 		try {
 			String msg = "";
-			OutputStream ou = this.con.getOutputStream();
-			Writer ouw = new OutputStreamWriter(ou);
-			bfw = new BufferedWriter(ouw);
-
 			while (!"Sair".equalsIgnoreCase(msg) && msg != null) {
 				msg = bfr.readLine();
 				System.out.println("chegou: "+ msg);
@@ -47,26 +46,29 @@ public class Jogador extends Thread {
 			}
 
 		} catch (Exception e) {
-			System.out.println("Alguém desconectou, encerrar partida");
 			try {
-				con.close();
+				this.comunicador.comunicar("Encerrar ", this);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 		}	
 	}
 	
-	public void waitPartidaStart() {
-		this.sendToJogador("Partida: espere");
+	public void desconectar() {
+		try {
+			con.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void sendToJogador(String msg) {
 		try{
-			System.out.println("Mensagem que vai ser enviada ao cliente: "+msg+"\r\n");
+			System.out.println("Mensagem que vai ser enviada ao player" + player +": "+msg+"\r\n");
 			bfw.write(msg + "\r\n");
 			bfw.flush();
 		}catch(Exception e){
-			System.out.println("Deu ruim ao mandar pro jogador");
+			System.out.println("Desconectour");
 		}			
 	}
 	

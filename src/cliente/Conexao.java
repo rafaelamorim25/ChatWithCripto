@@ -12,7 +12,6 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.Socket;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -129,6 +128,7 @@ public class Conexao  implements Runnable {
 		try {
 			this.escutar();
 		} catch (IOException e) {
+			System.out.println("deu ruim aqui");
 			e.printStackTrace();
 		}
 	}

@@ -14,6 +14,7 @@ public class Cliente extends JFrame implements IComunicacao {
 	private JanelaMultiPlayerOnline janela;
 
 	public static void main(String[] args) throws IOException {
+		@SuppressWarnings("unused")
 		Cliente app = new Cliente();
 	}
 
@@ -34,7 +35,7 @@ public class Cliente extends JFrame implements IComunicacao {
 	}
 	
 	public void controle(String msg) {
-		
+			
 		if(msg.contains("Pinte: ")) {
 			realizarJogada(msg);
 		} else if(msg.contains("Mensagem: ")) {
@@ -46,9 +47,18 @@ public class Cliente extends JFrame implements IComunicacao {
 				str.append(mensagem[i]);
 			}
 			janela.getPainelChat().mostrarMensagem(str.toString());
+		} else if(msg.contains("Reiniciar: ")) {
+			janela.getPainelTabuleiro().limpar();
+			travarDestravar(msg);
 		} else {
 			JOptionPane.showMessageDialog(null, msg);
 		}
+	}
+	
+	public void travarDestravar(String msg) {
+		String ordem[] = msg.split(" ");
+		
+		janela.getPainelTabuleiro().travar((Integer.parseInt(ordem[1])==1) ? true : false);
 	}
 	
 	public void realizarJogada(String msg) {

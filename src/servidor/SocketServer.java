@@ -11,6 +11,12 @@ public class SocketServer {
 
 	private static ServerSocket server;
 	
+	/*
+	 *Aqui ele mostra em qual porta o server vai se conectar, cria um partida, verifica se 
+	 *conectaram no socket , cria  partida cria um novo jogador e add na partida, dai espera 
+	 *uma segunda conexao
+	 */
+	
 	public static void main(String[] args) {
 		try {
 			JLabel lblMessage = new JLabel("Porta do Servidor:");

@@ -55,6 +55,14 @@ public class PainelTabuleiro extends JPanel {
 		botoes[x][y].setBackground(c);
 	}
 	
+	public void limpar() {
+		for(int i = 0; i < 6; i++) {
+			for(int j = 0; j < 7; j++) {
+				botoes[i][j].setBackground(new Color(224, 224, 224, 224));
+			}
+		}
+	}
+	
 	private class ActionPlay implements ActionListener{
 
 		int coluna;

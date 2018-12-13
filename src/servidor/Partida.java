@@ -18,15 +18,16 @@ public class Partida implements IComunicacao {
 		statusPartida = PARTIDANAOINICIADA; 
 	}
 	
-	public void addPlayer1(Jogador bfw) {
-		player1 = bfw;
+	public void addPlayer1(Jogador jogador) {
+		player1 = jogador;
 		player1.setComunicador(this);
 	}
 	
-	public void addPlayer2(Jogador bfw) {
-		player2 = bfw;
+	public void addPlayer2(Jogador jogador) {
+		player2 = jogador;
 		player2.setComunicador(this);
 		statusPartida = PARTIDAEMANDAMENTO;
+		player1.sendToJogador("A partida começou, sua vez de jogar");
 	}
 
 	@Override
@@ -34,7 +35,9 @@ public class Partida implements IComunicacao {
 		
 		System.out.println("chegou mensagem: " + msg);
 		
-		if(statusPartida==PARTIDAEMANDAMENTO) {
+		if(msg.contains("Encerrar ")) {
+			desconect(jogador);
+		} else if(statusPartida==PARTIDAEMANDAMENTO) {
 			if(msg.contains("Mensagem: ")) {
 				this.enviarMensagem(msg, jogador);
 				System.out.println("Entrou na msg");
@@ -45,20 +48,27 @@ public class Partida implements IComunicacao {
 				System.out.println("Mensagem enviada por aliens não pode ser decodificada");
 			}	
 		}else {
-			jogador.sendToJogador("partida já acabou ou nem cmç");
+			jogador.sendToJogador("A partida ainda não começou");
 		}
 
 	}
 	
+	private void desconect(Jogador jogador) {
+		if(jogador.getPlayer()==Tabuleiro.PLAYER1) {
+			player2.sendToJogador("O outro player saiu e a partida foi desconectada");
+		}else {
+			player1.sendToJogador("O outro player saiu e a partida foi desconectada");
+		}
+		
+		player1.desconectar();
+		player2.desconectar();
+	}
+	
 	public void enviarMensagem(String msg, Jogador jogador) {
 		
-		System.out.println(msg+"cabou");
-		
 		if (jogador.equals(player1)) {
-			System.out.println("Enviada ao player 1");
 			player2.sendToJogador(msg); 
 		}else {
-			System.out.println("Enviada ao player 2");
 			player1.sendToJogador(msg);
 		}
 	}
@@ -79,9 +89,9 @@ public class Partida implements IComunicacao {
 				trave1 = 0;
 				trave2 = 1;
 			}
-			tabuleiro.getTabuleiro().printTabuleiro();
 			player1.sendToJogador("Pinte: " + tabuleiro.getJogada().toString() + " " + color + " " + trave1);
 			player2.sendToJogador("Pinte: " + tabuleiro.getJogada().toString() + " " + color + " " + trave2);
+			
 		}else {
 			jogador.sendToJogador("Jogue novamente ou espere a sua vez");
 		}
@@ -91,12 +101,19 @@ public class Partida implements IComunicacao {
 			Jogador j = (jogador==player1) ? player2 : player1;
 			j.sendToJogador("Você perdeu");
 			statusPartida = PARTIDAACABOU;
+			this.reiniciarPartida();
 		}
-		
-		System.out.println(tabuleiro.verificarGanhador());
 	}
 	
-	public String[] separarMensagem(String msg) {
+	private void reiniciarPartida() {
+		statusPartida = PARTIDANAOINICIADA;
+		tabuleiro.recomecar();
+		player1.sendToJogador("Reiniciar: " + ((tabuleiro.getVez()==Tabuleiro.PLAYER1) ? 1 : 0));
+		player2.sendToJogador("Reiniciar: " + ((tabuleiro.getVez()==Tabuleiro.PLAYER1) ? 0 : 1));
+		statusPartida = PARTIDAEMANDAMENTO;
+	}
+	
+	private String[] separarMensagem(String msg) {
 		String[] mensagem;
 		mensagem = msg.split(" ");
 		return mensagem;
@@ -104,7 +121,6 @@ public class Partida implements IComunicacao {
 
 	@Override
 	public void comunicar(String msg) throws IOException {
-		// TODO Auto-generated method stub
-		
+
 	}
 }
