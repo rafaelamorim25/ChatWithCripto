@@ -11,7 +11,6 @@ import java.awt.event.KeyListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -43,9 +42,7 @@ public class PainelChat extends JPanel {
 		this.add(painelC, BorderLayout.CENTER);
 		painelC.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		JLabel lblHistorico = new JLabel("Histórico");
-		painelC.add(lblHistorico);
-		texto = new JTextArea(10, 20);
+		texto = new JTextArea(15, 20);
 		texto.setEditable(false);
 		texto.setBackground(new Color(240, 240, 240));
 		JScrollPane scroll = new JScrollPane(texto);

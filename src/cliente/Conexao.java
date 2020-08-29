@@ -75,7 +75,6 @@ public class Conexao  implements Runnable {
 
 			if (bfr.ready()) {
 				msg = bfr.readLine();
-				System.out.println("Chegou no cliente: "+ msg);
 				
 				this.comunicador.comunicar(msg);	
 			}
@@ -86,7 +85,8 @@ public class Conexao  implements Runnable {
 			bfw.write(msg + "\r\n");
 			bfw.flush();
 		} catch (IOException e) {
-			System.out.println("naoEnviou");
+			System.out.println("O outro usuário saiu do chat0");
+			System.exit(0);
 		}
 		
 	}

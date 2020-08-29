@@ -1,68 +1,33 @@
 package cliente;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
 
 public class JanelaMultiPlayerOnline extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	Cliente cliente;
-	private BufferedImage image;
-	private PainelTabuleiro tab;
 	private PainelChat chat;
 
 	public JanelaMultiPlayerOnline(Cliente cliente) {
-		super("Lig 4");
+		super("Chat");
 		this.cliente = cliente;
 		init();
-		setIcone();
 	}
 	
 	private void init() {
-		this.setBounds(100, 100, 575, 338);
+		this.setBounds(100, 100, 300, 400);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		getContentPane().setLayout(new GridLayout(0, 2, 0, 0));
-		
-		JPanel painelEsquerdo = new JPanel();
-		getContentPane().add(painelEsquerdo);
-		painelEsquerdo.setLayout(new BorderLayout(0, 0));
-		
-		JPanel painelNorte = new JPanel();
-		painelEsquerdo.add(painelNorte, BorderLayout.NORTH);
-		painelNorte.setBorder(new TitledBorder(null, "LIGA 4", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		
-		tab = new PainelTabuleiro(cliente);
-		painelEsquerdo.add(tab, BorderLayout.CENTER);
+		getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		chat = new PainelChat(cliente);
-		getContentPane().add(chat);
+		getContentPane().add(chat, BorderLayout.CENTER);
 	
 		this.setVisible(true);
 	}
 	
-	public PainelTabuleiro getPainelTabuleiro() {
-		return this.tab;
-	}
-	
 	public PainelChat getPainelChat() {
 		return this.chat;
-	}
-	
-private void setIcone () {
-		
-		try {
-			image = ImageIO.read(new File("Icone\\ligaIcon.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		this.setIconImage(image);
 	}
 }

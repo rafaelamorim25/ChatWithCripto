@@ -1,17 +1,25 @@
 package cliente;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import java.awt.Color;
-import servidor.IComunicacao;
-import servidor.Jogador;
 import java.io.IOException;
+import java.math.BigInteger;
+
+import javax.swing.JFrame;
+
+import criptografia.AES;
+import criptografia.AESKey;
+import criptografia.RSA;
+import criptografia.RSAKey;
+import servidor.IComunicacao;
+import servidor.Usuario;
 
 public class Cliente extends JFrame implements IComunicacao {
 
 	private static final long serialVersionUID = 1L;
 	private Conexao conexao;
 	private JanelaMultiPlayerOnline janela;
+	private RSAKey publicKey = new RSAKey();
+	private AESKey privateKey = new AESKey();
+	private boolean firstMessage = true;
 
 	public static void main(String[] args) throws IOException {
 		@SuppressWarnings("unused")
@@ -25,55 +33,69 @@ public class Cliente extends JFrame implements IComunicacao {
 		janela = new JanelaMultiPlayerOnline(this);
 	}
 
-	public void enviarJogada(int coluna) {
-		conexao.enviar("Jogada: " + coluna);
-	}
-	
 	public void enviarMensagem(String str) {
-		janela.getPainelChat().mostrarMensagem(conexao.getNome() + " -> " + str);
-		conexao.enviar("Mensagem: " + conexao.getNome() + " -> " + str);
-	}
-	
-	public void controle(String msg) {
+		janela.getPainelChat().mostrarMensagem(conexao.getNome() + ": " + str);
+		try {
+			System.out.println("---------------------------------");
+			System.out.println("Mensagem descriptografada com AES que será enviada: " + conexao.getNome() + ": " + str);
 			
-		if(msg.contains("Pinte: ")) {
-			realizarJogada(msg);
-		} else if(msg.contains("Mensagem: ")) {
-			String[] mensagem = msg.split(" ");
+			str = AES.encrypt(conexao.getNome() + ": " + str, privateKey);
 			
-			StringBuilder str = new StringBuilder("");
+			conexao.enviar(str);
 			
-			for(int i = 1; i < mensagem.length; i++) {
-				str.append(mensagem[i]);
-			}
-			janela.getPainelChat().mostrarMensagem(str.toString());
-		} else if(msg.contains("Reiniciar: ")) {
-			janela.getPainelTabuleiro().limpar();
-			travarDestravar(msg);
-		} else {
-			JOptionPane.showMessageDialog(null, msg);
+			System.out.println("Mensagem descriptografada com AES que será enviada: " + str);
+			System.out.println("---------------------------------");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
-	
-	public void travarDestravar(String msg) {
-		String ordem[] = msg.split(" ");
-		
-		janela.getPainelTabuleiro().travar((Integer.parseInt(ordem[1])==1) ? true : false);
+
+	public void controle(String msg) {
+
+		if (firstMessage) {
+			
+			System.out.println("---------------------------------");
+			System.out.println("Chave RSA pública que chegou do servidor: " + msg);
+			System.out.println("---------------------------------");
+			
+			String[] mensagem = msg.split(" ");
+			publicKey.setE(new BigInteger(mensagem[0]));
+			publicKey.setN(new BigInteger(mensagem[1]));
+			privateKey = AES.generateKey();
+			String aux = RSA.encriptar(privateKey.toString(), publicKey);
+			conexao.enviar(aux);
+			firstMessage = false;
+			
+			System.out.println("---------------------------------");
+			System.out.println("Chave AES que será enviada sem criptografia: " + privateKey);
+			System.out.println("Chave AES que será enviada com criptografia: " + aux);
+			System.out.println("---------------------------------");
+			
+
+		} else {
+
+			try {
+				System.out.println("---------------------------------");
+				System.out.println("Mensagem criptografada com AES que chegou: " + msg);
+				
+				msg = AES.decrypt(msg, privateKey);
+				
+				System.out.println("Mensagem descriptografada com AES que chegou: " + msg);
+				System.out.println("---------------------------------");
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			janela.getPainelChat().mostrarMensagem(msg);
+
+		}
 	}
-	
-	public void realizarJogada(String msg) {
-		Color c;
-		String jogada[] = msg.split(" ");
-		
-		c = (Integer.parseInt(jogada[3])==0) ? Color.blue : Color.red;
-		
-		Boolean travei = (Integer.parseInt(jogada[4])==1) ? false : true;
-		janela.getPainelTabuleiro().travar(travei);
-		janela.getPainelTabuleiro().pintar(Integer.parseInt(jogada[1]), Integer.parseInt(jogada[2]), c);
-	}
-		
+
 	@Override
-	public void comunicar(String msg, Jogador jogador) throws IOException {}
+	public void comunicar(String msg, Usuario jogador) throws IOException {
+	}
 
 	@Override
 	public void comunicar(String msg) throws IOException {
