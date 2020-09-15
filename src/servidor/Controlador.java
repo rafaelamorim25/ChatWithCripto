@@ -28,12 +28,12 @@ public class Controlador implements IComunicacao {
 
 	}
 
-	public void enviarMensagem(String msg, Usuario user) {
+	public void enviarMensagem(String msg, Usuario user) { //Envia de um usuario para o outro, a mensagem será encriptada novamente
 
 		if (user.equals(user1)) {
-			user2.sendToCliente(msg);
+			user2.enviarParaCliente(msg);
 		} else {
-			user1.sendToCliente(msg);
+			user1.enviarParaCliente(msg);
 		}
 	}
 

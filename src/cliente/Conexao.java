@@ -1,7 +1,5 @@
 package cliente;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -17,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import servidor.IComunicacao;
+import utilidades.VerificarDigito;
 
 public class Conexao  implements Runnable {
 	
@@ -45,7 +44,20 @@ public class Conexao  implements Runnable {
 		}
 	}
 	
-	private void initialize() {
+	@Override
+	public void run() {
+		
+		try {
+			
+			this.escutar();
+			
+		} catch (IOException e) {
+			System.out.println("Não foi possível escutar");
+			System.exit(0);
+		}
+	}
+	
+	private void initialize() { //Parametros da conexão
 		JLabel lbl = new JLabel("Dados para conexão:");
 		txtIP = new JTextField("127.0.0.1");
 		txtPorta = new JTextField("12345");
@@ -71,21 +83,21 @@ public class Conexao  implements Runnable {
 		BufferedReader bfr = new BufferedReader(inr);
 		String msg = "";
 
-		while (!"Sair".equalsIgnoreCase(msg))
-
+		while (true) {
 			if (bfr.ready()) {
-				msg = bfr.readLine();
-				
-				this.comunicador.comunicar(msg);	
+				msg = bfr.readLine(); //Recebe a mensagem
+				this.comunicador.comunicar(msg); //Envia para o cliente
 			}
+		}
+
 	}
 	
 	public void enviar(String msg) {
 		try {
-			bfw.write(msg + "\r\n");
+			bfw.write(msg + "\r\n"); //Envia a mensagem
 			bfw.flush();
 		} catch (IOException e) {
-			System.out.println("O outro usuário saiu do chat0");
+			System.out.println("O outro usuário saiu do chat");
 			System.exit(0);
 		}
 		
@@ -93,43 +105,5 @@ public class Conexao  implements Runnable {
 	
 	public String getNome() {
 		return this.txtNome.getText();
-	}
-	
-	protected class VerificarDigito implements KeyListener {
-
-		boolean backspace;
-
-		public VerificarDigito(){
-			backspace = false;
-		}
-
-		public void keyTyped(KeyEvent evento){
-			char letra;
-			letra = evento.getKeyChar();
-
-			if (!backspace) {
-				if ( (letra < '0') || (letra > '9')) {
-					evento.consume();
-					JOptionPane.showMessageDialog(null,"Somente dígitos");
-				}
-			}else{
-				backspace = false;
-			}
-		}
-		
-		public void keyPressed(KeyEvent evento) {}
-		
-		public void keyReleased(KeyEvent arg0) {}
-	}
-
-	@Override
-	public void run() {
-		
-		try {
-			this.escutar();
-		} catch (IOException e) {
-			System.out.println("deu ruim aqui");
-			e.printStackTrace();
-		}
 	}
 }

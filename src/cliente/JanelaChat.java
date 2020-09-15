@@ -4,13 +4,13 @@ import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 
-public class JanelaMultiPlayerOnline extends JFrame {
+public class JanelaChat extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	Cliente cliente;
 	private PainelChat chat;
 
-	public JanelaMultiPlayerOnline(Cliente cliente) {
+	public JanelaChat(Cliente cliente) {
 		super("Chat");
 		this.cliente = cliente;
 		init();

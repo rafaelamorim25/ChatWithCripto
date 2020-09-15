@@ -48,7 +48,6 @@ public class PainelChat extends JPanel {
 		JScrollPane scroll = new JScrollPane(texto);
 		painelC.add(scroll);
 		texto.setLineWrap(true);
-		texto.setBorder(BorderFactory.createEtchedBorder(Color.BLUE, Color.BLUE));
 		
 		JPanel painelS = new JPanel();
 		this.add(painelS, BorderLayout.SOUTH);
@@ -57,7 +56,7 @@ public class PainelChat extends JPanel {
 		JPanel painelSulN = new JPanel();
 		painelS.add(painelSulN);
 		txtMsg = new JTextField(20);
-		txtMsg.setBorder(BorderFactory.createEtchedBorder(Color.BLUE, Color.BLUE));
+
 		painelSulN.setLayout(new FlowLayout());
 		painelSulN.add(txtMsg);
 		
@@ -68,15 +67,6 @@ public class PainelChat extends JPanel {
 		txtMsg.addKeyListener(new ActionEnviarEnter());
 		painelSulS.add(btnSend);
 		btnSend.addActionListener(new ActionEnviar());
-	}
-	
-	public void mostrarMensagem(String msg) {
-		texto.append(msg + "\n");
-	}
-	
-	public void enviar () {
-		cliente.enviarMensagem(txtMsg.getText());
-		txtMsg.setText("");
 	}
 	
 	private class ActionEnviar implements ActionListener {
@@ -100,5 +90,15 @@ public class PainelChat extends JPanel {
 				enviar();
 			}	
 		}
+	}
+	//Mostra a mensagem na tela
+	public void mostrarMensagem(String msg) {
+		texto.append(msg + "\n");
+	}
+	
+	//Chama a funcao que manda a mensagem ao servidor
+	public void enviar () {
+		cliente.criptografaMandaEnviarMensagem(txtMsg.getText());
+		txtMsg.setText("");
 	}
 }
